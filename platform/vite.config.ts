@@ -8,6 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: "/harasa/", // المنصة تُخدَّم ضمن الموقع الرسمي تحت /harasa/
   resolve: { alias: { "@": path.resolve(__dirname, "src") } },
   server: {
     host: true,

@@ -1,13 +1,14 @@
 import {
   Compass, BookOpen, Newspaper, MessageCircle, ClipboardCheck,
   ArrowLeft, Sparkles, CalendarDays, Megaphone, MapPin,
+  ShieldCheck, Lock, Clock3, BellRing, FileBarChart2, UserCog, Building2,
 } from 'lucide-react';
 import Reveal from '../components/Reveal';
 import LogoMark from '../components/LogoMark';
 import { SectionHead, Chip, Stat, IMG, TopoLines } from '../components/ui';
 import type { PageKey } from '../components/Header';
 import type { SiteConfig } from '../lib/site';
-import { NEWS_ITEMS } from '../lib/site';
+import { NEWS_ITEMS, PLATFORM_PATH } from '../lib/site';
 import { levels } from '../data/levels';
 import { formatDate } from '../lib/store';
 
@@ -128,6 +129,89 @@ export default function Home({ cfg, onNavigate }: { cfg: SiteConfig; onNavigate:
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ================= منصة الحراسة العامة (ضمن الموقع) ================= */}
+      <section className="pb-4">
+        <div className="max-w-7xl mx-auto px-5 md:px-6">
+          <Reveal>
+            <div className="relative overflow-hidden rounded-[2.5rem] bg-navy text-white p-8 md:p-12 shadow-2xl shadow-navy/25 border border-white/5">
+              <TopoLines className="absolute -left-40 -top-44 w-[560px] h-[560px] opacity-40" />
+              <div className="relative grid lg:grid-cols-[1.5fr_1fr] gap-10 items-center">
+                <div>
+                  <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-gold/40 bg-gold/10 text-gold text-sm font-bold">
+                    <ShieldCheck className="w-4 h-4" />
+                    فضاء رقمي داخلي — مُدمَج ضمن الموقع الرسمي
+                  </div>
+                  <h2 className="font-display font-black text-3xl md:text-4xl mt-5 mb-4">
+                    منصة <span className="text-gold">الحراسة العامة</span> لتدبير الحياة المدرسية
+                  </h2>
+                  <p className="text-white/70 text-lg leading-relaxed mb-7 max-w-2xl">
+                    نظام داخلي لإطار الإدارة والحراسة العامة: متابعة التلاميذ والأقسام، رصد الحضور والغياب
+                    والتأخرات، إشعارات أولياء الأمور، وتقارير جاهزة للطباعة — بوصول محمي حسب الصلاحيات.
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-3 mb-8 max-w-2xl">
+                    {[
+                      { icon: ClipboardCheck, t: 'رصد الحضور والغياب', d: 'حصة بحصة، في ثوانٍ' },
+                      { icon: Clock3, t: 'تتبع التأخرات', d: 'تنبيهات آلية حسب العتبات' },
+                      { icon: BellRing, t: 'إشعارات الأولياء', d: 'رسائل واتساب جاهزة للإرسال' },
+                      { icon: FileBarChart2, t: 'تقارير وسجل تدقيق', d: 'طباعة PDF وتصدير Excel' },
+                    ].map((f) => (
+                      <div key={f.t} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <div className="w-9 h-9 rounded-xl bg-gold/15 text-gold flex items-center justify-center shrink-0">
+                          <f.icon className="w-5 h-5" strokeWidth={2} />
+                        </div>
+                        <div>
+                          <div className="font-display font-extrabold text-sm">{f.t}</div>
+                          <div className="text-white/50 text-xs mt-0.5 leading-relaxed">{f.d}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <a
+                      href={PLATFORM_PATH}
+                      className="btn-gold px-8 py-3.5 rounded-2xl font-display font-extrabold inline-flex items-center gap-2.5"
+                    >
+                      <ShieldCheck className="w-5 h-5" />
+                      ولوج المنصة
+                    </a>
+                    <span className="flex items-center gap-1.5 text-xs text-white/45">
+                      <Lock className="w-3.5 h-3.5 text-gold/70" />
+                      دخول مخصص لموظفي المؤسسة حسب الصلاحيات
+                    </span>
+                  </div>
+                </div>
+
+                {/* بطاقة الصلاحيات */}
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
+                  <div className="flex items-center gap-2.5">
+                    <UserCog className="w-5 h-5 text-gold" />
+                    <div className="font-display font-extrabold">الوصول حسب الصلاحيات</div>
+                  </div>
+                  {[
+                    { role: 'مدير المؤسسة', d: 'كل الصلاحيات: المستخدمون، الإعدادات، التدقيق' },
+                    { role: 'الحراسة العامة', d: 'التلاميذ، الحضور والغياب، التأخرات، الإشعارات' },
+                    { role: 'الإدارة', d: 'التلاميذ، الأقسام، التقارير، الإشعارات' },
+                    { role: 'أستاذ(ة)', d: 'رصد حضور حصصه فقط' },
+                  ].map((r) => (
+                    <div key={r.role} className="flex items-start gap-3 rounded-2xl bg-white/5 border border-white/8 px-4 py-3">
+                      <span className="mt-1 w-2 h-2 rounded-full bg-gold shrink-0" />
+                      <div>
+                        <div className="font-bold text-sm">{r.role}</div>
+                        <div className="text-white/45 text-xs mt-0.5 leading-relaxed">{r.d}</div>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="flex items-center gap-2 text-[11px] text-white/40 pt-1">
+                    <Building2 className="w-3.5 h-3.5 text-gold/60" />
+                    نظام داخلي محمي — بيانات محفوظة في قاعدة المؤسسة
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 

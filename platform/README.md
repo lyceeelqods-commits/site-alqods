@@ -13,10 +13,30 @@
 
 ```bash
 npm install        # dépendances
-npm run build      # construit l'interface → dist/
+npm run build      # construit l'interface → dist/ (sous la base /harasa/)
 npm start          # démarre le serveur sur http://localhost:3000
 npm run seed       # (optionnel) reconstruit la base avec les données de démo
 ```
+
+## Intégration au site officiel (origin unique)
+
+Le serveur sert **le site officiel et la plateforme sous la même origine** :
+
+- `/` → site officiel (build monofichier du dossier racine, `npm run build` à la racine)
+- `/harasa/` → interface de la plateforme (base Vite `/harasa/`)
+- `/api/*` → API de la plateforme (sessions, SQLite, RBAC)
+
+Depuis la racine du dépôt :
+
+```bash
+npm install && npm --prefix platform install
+npm run build:all   # site + plateforme
+npm start           # http://localhost:3000  (site sur / , plateforme sur /harasa/)
+```
+
+Le site officiel pointe vers la plateforme via le bouton **« منصة الحراسة »**
+(en-tête, page d'accueil et pied de page), et la plateforme renvoie vers le site
+(« العودة إلى الموقع الرسمي » / « الموقع الرسمي للمؤسسة »).
 
 Au premier démarrage, si la base est vide, elle est initialisée automatiquement avec des données de démonstration réalistes (~188 élèves, 12 classes, ~11 000 lignes de présence sur 15 jours scolaires).
 

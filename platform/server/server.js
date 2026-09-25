@@ -25,14 +25,32 @@ app.use(express.json({ limit: "1mb" }));
 // تسجيل المسارات
 registerRoutes(app);
 
-// تقديم واجهة الويب المبنية
+/* =====================================================================
+   تقديم موحّد — الموقع الرسمي + منصة الحراسة ضمن أصل (origin) واحد:
+     /            → الموقع الرسمي (البناء الأحادي للموقع في ../../dist)
+     /harasa/     → واجهة منصة الحراسة العامة (البناء في ../dist)
+     /api/*       → واجهة برمجة التطبيقات للمنصة (تبقى في الجذر)
+   ===================================================================== */
+
+// المنصة تحت /harasa/ — ملفات ثابتة + سقوط SPA للروابط الداخلية
 const dist = path.join(__dirname, "..", "dist");
-app.use(express.static(dist));
-app.get(/^\/(?!api\/).*/, (req, res) => {
-  const index = path.join(dist, "index.html");
-  if (fs.existsSync(index)) res.sendFile(index);
+const distIndex = path.join(dist, "index.html");
+app.use("/harasa", express.static(dist));
+app.get("/harasa", (req, res) => res.redirect(301, "/harasa/"));
+app.get(/^\/harasa\/.+$/, (req, res) => {
+  if (fs.existsSync(distIndex)) res.sendFile(distIndex);
   else res.status(503).send("الواجهة غير مبنية — نفّذ: npm run build");
 });
+
+// الموقع الرسمي في الجذر — بناء أحادي الملف (npm run build في جذر المشروع)
+const siteDist = path.join(__dirname, "..", "..", "dist");
+const siteIndex = path.join(siteDist, "index.html");
+app.get(["/", "/index.html"], (req, res) => {
+  if (fs.existsSync(siteIndex)) res.sendFile(siteIndex);
+  else res.redirect(302, "/harasa/"); // الموقع غير مبني بعد → المنصة
+});
+// ملفات ثابتة إضافية للموقع إن وُجدت (favicon وغيره)
+app.use(express.static(siteDist, { index: false }));
 
 // معالج الأخطاء
 app.use((err, req, res, next) => {
