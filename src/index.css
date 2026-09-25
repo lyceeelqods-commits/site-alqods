@@ -1,0 +1,328 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: 'Cairo', 'Tajawal', sans-serif;
+  --font-body: 'Tajawal', 'Cairo', sans-serif;
+
+  /* school palette */
+  --color-navy: #0c2340;
+  --color-navy-2: #123056;
+  --color-azure: #1e56b0;
+  --color-azure-2: #2f6fd0;
+  --color-sky-soft: #eef4fc;
+  --color-gold: #d9a441;
+  --color-gold-deep: #b58324;
+  --color-gold-soft: #faf3e3;
+  --color-leaf: #2e8b57;
+  --color-leaf-soft: #e7f4ec;
+  --color-terra: #d96c47;
+  --color-terra-soft: #fae9e2;
+  --color-night: #081120;
+
+  /* legacy tokens used by the embedded diagnostic platform — remapped to school palette */
+  --color-paper: #f4f8fd;
+  --color-cream: #e9f0f9;
+  --color-line: #dbe6f2;
+  --color-ink: #10233f;
+  --color-ink-soft: #51647f;
+  --color-forest: #123056;
+  --color-forest-2: #1e56b0;
+  --color-amber: #d9a441;
+  --color-amber-deep: #b58324;
+  --color-amber-soft: #faf3e3;
+  --color-sky: #1e56b0;
+}
+
+:root {
+  --c-bg: #f4f8fd;
+  --c-surface: #ffffff;
+  --c-text: #10233f;
+  --c-muted: #51647f;
+  --c-border: #dbe6f2;
+  --c-tint: #eef4fc;
+}
+.dark {
+  --c-bg: #081120;
+  --c-surface: #0f1b30;
+  --c-text: #e8eef8;
+  --c-muted: #94a5be;
+  --c-border: #1d2f4c;
+  --c-tint: #12213a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Tajawal', sans-serif;
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(217, 164, 65, 0.35);
+}
+
+/* ---------- semantic surfaces (dark-mode aware) ---------- */
+.surface {
+  background: var(--c-surface);
+  color: var(--c-text);
+  border: 1px solid var(--c-border);
+}
+.surface-tint {
+  background: var(--c-tint);
+  border: 1px solid var(--c-border);
+}
+.t-muted { color: var(--c-muted); }
+.t-ink { color: var(--c-text); }
+.bd { border-color: var(--c-border); }
+
+/* ---------- reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--rd, 0ms);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* ---------- keyframes ---------- */
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes loadbar { 0% { transform: translateX(-100%); } 50% { transform: translateX(0); } 100% { transform: translateX(100%); } }
+@keyframes pop { from { opacity: 0; transform: scale(0.96) translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes confettiFall { 0% { transform: translateY(-8vh) rotate(0); opacity: 1; } 100% { transform: translateY(104vh) rotate(720deg); opacity: 0.2; } }
+@keyframes tick { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes shineSweep { from { transform: translateX(150%) skewX(-18deg); } to { transform: translateX(-260%) skewX(-18deg); } }
+@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(50%); } }
+@keyframes pulseSoft { 0%,100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+@keyframes dashDraw { to { stroke-dashoffset: 0; } }
+
+.anim-floaty { animation: floaty 5s ease-in-out infinite; }
+.anim-pop { animation: pop 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+.anim-pop-in { animation: popIn 0.3s ease-out both; }
+.anim-tick { animation: tick 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+.bar-grow { transform-origin: right center; animation: barGrow 1s cubic-bezier(0.22,1,0.36,1) both; }
+.dot-pulse { animation: pulseSoft 2.4s ease-in-out infinite; }
+
+/* ---------- ticker ---------- */
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: tickerScroll 28s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+
+/* ---------- cards ---------- */
+.card-surface {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  color: var(--c-text);
+  box-shadow: 0 1px 2px rgba(12, 35, 64, 0.05), 0 10px 26px -14px rgba(12, 35, 64, 0.14);
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease, border-color 0.3s;
+}
+.card-surface:hover {
+  transform: translateY(-5px);
+  border-color: rgba(30, 86, 176, 0.45);
+  box-shadow: 0 2px 4px rgba(12,35,64,0.05), 0 24px 44px -18px rgba(12,35,64,0.25);
+}
+
+.glass-dark {
+  background: rgba(8, 17, 32, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* ---------- buttons ---------- */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e56b0 0%, #0c2340 100%);
+  color: #f4f8fd;
+  box-shadow: 0 10px 24px -8px rgba(30, 86, 176, 0.55), inset 0 1px 0 rgba(255,255,255,0.14);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 32px -8px rgba(30,86,176,0.6); }
+.btn-primary::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; width: 40%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.22), transparent);
+  transform: translateX(150%) skewX(-18deg);
+}
+.btn-primary:hover::after { animation: shineSweep 0.9s ease; }
+
+.btn-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #e7bd63 0%, #d9a441 100%);
+  color: #2a1c04;
+  box-shadow: 0 10px 24px -8px rgba(181, 131, 36, 0.5);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 16px 32px -8px rgba(181,131,36,0.55); }
+
+/* ---------- topo lines (home hero decoration) ---------- */
+.topo-line {
+  fill: none;
+  stroke: rgba(217, 164, 65, 0.18);
+  stroke-width: 1.2;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation: dashDraw 3.2s ease forwards;
+}
+.topo-line:nth-child(2) { animation-delay: 0.3s; }
+.topo-line:nth-child(3) { animation-delay: 0.6s; }
+.topo-line:nth-child(4) { animation-delay: 0.9s; }
+.topo-line:nth-child(5) { animation-delay: 1.2s; }
+
+/* ---------- platform bits (diagnostic engine) ---------- */
+.radar-poly { transition: all 1s cubic-bezier(0.22,1,0.36,1); }
+.donut-arc { transition: stroke-dashoffset 1.4s cubic-bezier(0.22,1,0.36,1); }
+.confetti-bit {
+  position: fixed; top: -10vh; width: 10px; height: 14px; border-radius: 3px;
+  animation: confettiFall linear both; z-index: 90; pointer-events: none;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ==========================================================================
+   الهوية اللونية الخاصة بصفحة التقويم التشخيصي (تقويم شخصي)
+   لوحة دافئة: عاجي / رملي + برونزي ذهبي — مستقلة عن هوية الموقع العامة
+   ========================================================================== */
+.tq-page {
+  --tq-bg-1: #f3faf5;
+  --tq-bg-2: #e6f3ea;
+  --tq-accent: #0f6b48;
+  --tq-accent-2: #15803d;
+  --tq-accent-soft: #dcf5e4;
+  --tq-tint: #e7f4ec;
+  --tq-hero-1: #0f5a3d;
+  --tq-hero-2: #0a4230;
+  --tq-hero-3: #06281d;
+  background-image: linear-gradient(180deg, var(--tq-bg-1) 0%, var(--tq-bg-2) 100%);
+  color: #123024;
+}
+.dark .tq-page {
+  --tq-bg-1: #0d1f17;
+  --tq-bg-2: #08160f;
+  --tq-accent: #4ade80;
+  --tq-accent-2: #22c55e;
+  --tq-accent-soft: #12382a;
+  --tq-tint: #16271f;
+  --tq-hero-1: #0e4a34;
+  --tq-hero-2: #0a3526;
+  --tq-hero-3: #041b13;
+  color: #e3f3e9;
+}
+
+/* البطل (Hero) */
+.tq-hero {
+  background-image: linear-gradient(165deg, var(--tq-hero-1) 0%, var(--tq-hero-2) 55%, var(--tq-hero-3) 100%);
+}
+
+/* تحويل الأزرق إلى الأخضر داخل هذه الصفحة فقط */
+.tq-page .text-azure { color: var(--tq-accent) !important; }
+.tq-page .bg-azure { background-color: var(--tq-accent-2) !important; }
+.tq-page .bg-sky-soft { background-color: var(--tq-accent-soft) !important; }
+.tq-page .border-azure { border-color: var(--tq-accent) !important; }
+.tq-page .hover\:border-azure\/40:hover { border-color: rgba(21, 128, 61, 0.45) !important; }
+.tq-page .dark .hover\:border-azure\/40:hover { border-color: rgba(74, 222, 128, 0.5) !important; }
+.tq-page .hover\:bg-azure-2:hover { background-color: var(--tq-accent) !important; }
+.tq-page .ring-azure { --tw-ring-color: var(--tq-accent) !important; }
+.tq-page .shadow-azure\/25 { --tw-shadow-color: rgba(15, 107, 72, 0.28) !important; }
+.tq-page .shadow-azure\/10 { --tw-shadow-color: rgba(15, 107, 72, 0.12) !important; }
+
+/* الزر الأساسي في الصفحة: أخضر */
+.tq-page .btn-primary {
+  background-image: linear-gradient(135deg, var(--tq-accent-2) 0%, var(--tq-accent) 100%) !important;
+  box-shadow: 0 10px 24px -8px rgba(15, 107, 72, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+.tq-page .btn-primary:hover {
+  box-shadow: 0 16px 32px -8px rgba(15, 107, 72, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* الخطوط التوبوغرافية بلون أخضر هادئ */
+.tq-page .topo-line { stroke: rgba(34, 197, 94, 0.22) !important; }
+
+/* الذهبي داخل البطل يصبح أخضر فاتح ليتناسق */
+.tq-hero .text-gold { color: #86efac !important; }
+.tq-hero .border-gold\/40 { border-color: rgba(134, 239, 172, 0.4) !important; }
+.tq-hero .bg-gold\/10 { background-color: rgba(134, 239, 172, 0.1) !important; }
+
+/* التدرج البرتقالي/الذهبي للشارة يصبح أخضر */
+.tq-page .from-amber-500 {
+  background-image: linear-gradient(135deg, #16a34a 0%, #0f6b48 100%) !important;
+}
+
+/* ===== تحويل كل القيم البرونزية/الذهبية الصلبة إلى أخضر داخل صفحة التقويم ===== */
+/* النصوص — يجب الهروب من # داخل محددات الأصناف */
+.tq-page .text-\[\#8c5f1f\],
+.tq-page .text-\[\#b5832a\],
+.tq-page .text-\[\#d9a441\] { color: #0f6b48 !important; }
+.dark .tq-page .text-\[\#e0b256\],
+.dark .tq-page .text-\[\#d9a441\],
+.dark .tq-page .text-\[\#b5832a\] { color: #86efac !important; }
+
+/* الخلفيات الفاتحة */
+.tq-page .bg-\[\#f6ead3\] { background-color: var(--tq-accent-soft) !important; }
+
+/* الخلفيات الداكنة (أزرار، نقاط) */
+.tq-page .bg-\[\#8c5f1f\],
+.tq-page .bg-\[\#b5832a\],
+.tq-page .bg-\[\#d9a441\] { background-color: #0f6b48 !important; }
+.tq-page .hover\:bg-\[\#a06f22\]:hover { background-color: #15803d !important; }
+
+/* حدود */
+.tq-page .border-\[\#8c5f1f\],
+.tq-page .border-\[\#b5832a\],
+.tq-page .border-\[\#d9a441\] { border-color: #0f6b48 !important; }
+.tq-page .focus\:border-\[\#b5832a\]:focus { border-color: #15803d !important; }
+
+/* التدرجات من الذهبي إلى البرونزي */
+.tq-page .from-\[\#d9a441\] {
+  --tw-gradient-from: #16a34a var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(22 163 74 / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+.tq-page .to-\[\#8c5f1f\] { --tw-gradient-to: #0f6b48 var(--tw-gradient-to-position) !important; }
+
+/* التوهجات في البطل */
+.tq-page .bg-\[\#c99a3f\]\/25 { background-color: rgba(34, 197, 94, 0.18) !important; }
+.tq-page .bg-\[\#e7bd63\]\/20 { background-color: rgba(74, 222, 128, 0.16) !important; }
+
+/* حدود الإدخال عند التركيز داخل البطاقات */
+.tq-page input:focus,
+.tq-page select:focus { border-color: #15803d !important; }
+
+/* أشرطة التقدم الدائرية والخطوط SVG */
+.tq-page [stroke="#b5832a"] { stroke: #15803d !important; }
+
+/* ظلال عشوائية للعناصر المختارة */
+.tq-page .shadow-\[\#8c5f1f\]\/15 { box-shadow: 0 10px 15px -3px rgba(15, 107, 72, 0.18) !important; }
+.tq-page .shadow-\[\#8c5f1f\]\/25 { box-shadow: 0 10px 25px -5px rgba(15, 107, 72, 0.28) !important; }
+.tq-page .shadow-\[\#8c5f1f\]\/30 { box-shadow: 0 10px 30px -5px rgba(15, 107, 72, 0.32) !important; }
+.tq-page .hover\:border-\[\#d9a441\]:hover { border-color: #16a34a !important; }
+
+/* شارة "الأكثر إجراءً" البرتقالية */
+.tq-page .from-amber-500,
+.tq-page .to-orange-500 {
+  background-image: linear-gradient(135deg, #16a34a 0%, #0f6b48 100%) !important;
+}
+
+/* البطاقة الرئيسية: ظل أخضر */
+.tq-page .tq-main-card { box-shadow: 0 28px 64px -34px rgba(8, 80, 50, 0.42) !important; }
+.dark .tq-page .tq-main-card { box-shadow: 0 28px 64px -34px rgba(0, 0, 0, 0.7) !important; }
+
+/* الزر العائم */
+.tq-fab {
+  background-image: linear-gradient(135deg, #15803d 0%, #0f6b48 100%);
+  box-shadow: 0 16px 32px -12px rgba(8, 80, 50, 0.6);
+}
+.tq-fab:hover { transform: translateY(-2px); }
