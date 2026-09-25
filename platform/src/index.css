@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Cairo', 'Tajawal', sans-serif;
+  --font-body: 'Tajawal', 'Cairo', sans-serif;
+
+  /* هوية المؤسسة: أسود / أبيض / ذهبي بيج */
+  --color-ink: #1c1812;
+  --color-ink-soft: #6b6350;
+  --color-paper: #faf8f2;
+  --color-gold: #c09a3e;
+  --color-gold-deep: #8f7128;
+  --color-gold-soft: #f5edda;
+  --color-beige: #f3ecdc;
+  --color-line: #e7dfcc;
+  --color-night: #16130e;
+  --color-night-2: #262016;
+  --color-ok: #2e7d4f;
+  --color-ok-soft: #e5f2ea;
+  --color-warn: #b45309;
+  --color-warn-soft: #fdeeda;
+  --color-bad: #b91c1c;
+  --color-bad-soft: #fce8e8;
+}
+
+html { font-size: 15.5px; }
+body {
+  font-family: var(--font-body);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+.font-display { font-family: var(--font-display); }
+
+/* شرائط تمرير رقيقة */
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #d8cfb8; border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* حقول الإدخال الموحدة */
+.field {
+  width: 100%;
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  background: #fff;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.field:focus { border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(192,154,62,.15); }
+.field::placeholder { color: #b3a98f; }
+label.lbl { display:block; font-size:.8rem; font-weight:700; color:var(--color-ink-soft); margin-bottom:.3rem; }
+
+/* الجداول */
+.tbl { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .88rem; }
+.tbl th {
+  text-align: right; font-weight: 800; font-family: var(--font-display);
+  color: var(--color-ink-soft); background: var(--color-beige);
+  padding: .6rem .75rem; white-space: nowrap; border-bottom: 1px solid var(--color-line);
+  position: sticky; top: 0; z-index: 1;
+}
+.tbl td { padding: .55rem .75rem; border-bottom: 1px solid #f1ecdd; vertical-align: middle; }
+.tbl tbody tr:hover { background: #fbf7ea; }
+
+/* الطباعة */
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .print-full { margin: 0 !important; padding: 0 !important; box-shadow: none !important; }
+  .tbl th { background: #eee !important; }
+}
