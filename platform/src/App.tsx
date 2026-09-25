@@ -69,7 +69,7 @@ export default function App() {
 
   const ctx: Ctx = {
     boot: boot!, refreshBoot: loadBoot,
-    logout: async () => { await api("/auth/logout", { method: "POST" }); setBoot(null); },
+    logout: async () => { try { await api("/auth/logout", { method: "POST" }); } catch {} clearToken(); setBoot(null); },
     toasts, toast, confirm, page, setPage: setPageState,
   };
 

@@ -1,13 +1,26 @@
-// عميل API موحد
+// عميل API موحد — يدعم الكوكي وتوكن Authorization (احتياطاً لبيئات iframe)
+const TOKEN_KEY = "alqods_token";
+
+export function getToken() { return localStorage.getItem(TOKEN_KEY); }
+export function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
 export async function api(path: string, opts: any = {}) {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const token = getToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
   const res = await fetch("/api" + path, {
     credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
     ...opts,
+    headers: { ...headers, ...(opts.headers || {}) },
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
   });
   let data: any = {};
   try { data = await res.json(); } catch { /* 204 */ }
+  // حفظ التوكن بعد الدخول (احتياط الكوكيز المحجوبة)
+  if (path === "/auth/login" && res.ok && data?.token) {
+    try { localStorage.setItem(TOKEN_KEY, data.token); } catch { /* private mode */ }
+  }
+  if (res.status === 401 && getToken()) clearToken();
   if (!res.ok) {
     const err: any = new Error(data.error || `خطأ ${res.status}`);
     Object.assign(err, data);

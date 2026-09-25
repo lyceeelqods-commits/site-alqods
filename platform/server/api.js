@@ -16,23 +16,42 @@ function parseCookies(req) {
   return out;
 }
 
-export function createSession(res, userId, remember) {
+// هل الطلب قادم عبر HTTPS (بروكسي المعاينة)؟
+// في iframe عابر للمواقع يجب SameSite=None; Secure وإلا يرفض المتصفح الكوكي
+function isSecureRequest(req) {
+  if (req.socket?.encrypted) return true;
+  const xf = String(req.headers["x-forwarded-proto"] || "").split(",")[0].trim();
+  if (xf) return xf === "https";
+  const host = req.headers.host || "";
+  return !/^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(host);
+}
+function cookieFlags(req) {
+  return isSecureRequest(req)
+    ? "Path=/; HttpOnly; Secure; SameSite=None"
+    : "Path=/; HttpOnly; SameSite=Lax";
+}
+
+export function createSession(req, res, userId, remember) {
   const token = crypto.randomBytes(32).toString("hex");
   const days = remember ? 30 : 1;
   const expires = new Date(Date.now() + days * 86400e3).toISOString();
   db.prepare("INSERT INTO sessions(token,user_id,expires_at) VALUES(?,?,?)").run(token, userId, expires);
   db.prepare("UPDATE users SET last_login_at=datetime('now','localtime') WHERE id=?").run(userId);
-  res.setHeader("Set-Cookie", `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${days * 86400}`);
+  res.setHeader("Set-Cookie", `${SESSION_COOKIE}=${token}; ${cookieFlags(req)}; Max-Age=${days * 86400}`);
+  return token;
 }
 
 export function destroySession(req, res) {
   const token = parseCookies(req)[SESSION_COOKIE];
   if (token) db.prepare("DELETE FROM sessions WHERE token=?").run(token);
-  res.setHeader("Set-Cookie", `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`);
+  res.setHeader("Set-Cookie", `${SESSION_COOKIE}=; ${cookieFlags(req)}; Max-Age=0`);
 }
 
 export function currentUser(req) {
-  const token = parseCookies(req)[SESSION_COOKIE];
+  // التوكن: من الكوكي (المتصفح) أو من ترويسة Authorization (احتياطاً لبيئات iframe التي تحجب الكوكيز)
+  let token = parseCookies(req)[SESSION_COOKIE];
+  const auth = req.headers.authorization;
+  if (!token && auth?.startsWith("Bearer ")) token = auth.slice(7);
   if (!token) return null;
   const row = db.prepare(`
     SELECT u.id, u.username, u.email, u.full_name, u.role, u.active, u.last_login_at
@@ -109,9 +128,10 @@ export function registerRoutes(app) {
       return res.status(401).json({ error: "اسم المستخدم أو كلمة السر غير صحيحة" });
     }
     if (!user.active) return res.status(403).json({ error: "هذا الحساب موقوف، المرجو الاتصال بالمدير" });
-    createSession(res, user.id, !!remember);
+    const token = createSession(req, res, user.id, !!remember);
     audit(user, "login", "auth", user.id, "تسجيل دخول");
-    res.json({ user: { id: user.id, username: user.username, full_name: user.full_name, role: user.role, email: user.email } });
+    // التوكن يُعاد أيضاً في JSON: احتياط لبيئات المعاينة التي تحجب كوكيز الطرف الثالث
+    res.json({ user: { id: user.id, username: user.username, full_name: user.full_name, role: user.role, email: user.email }, token });
   });
 
   app.post("/api/auth/logout", (req, res) => {
