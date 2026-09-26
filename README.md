@@ -56,6 +56,27 @@ git push
 - **GitHub Pages** : comme le build est un fichier HTML unique, il fonctionne tel quel
   après déploiement du dossier `dist/`.
 
+## منصة الحراسة العامة — ضمن الموقع (Plateforme intégrée)
+
+الموقع والمنصة يُخدَمان من **خادم واحد وأصل (origin) واحد**:
+
+| المسار | المحتوى |
+|---|---|
+| `/` | الموقع الرسمي (بناء أحادي الملف) |
+| `/harasa/` | منصة الحراسة العامة (واجهة + دخول محمي) |
+| `/api/*` | الواجهة البرمجية للمنصة (SQLite، جلسات، صلاحيات) |
+
+البناء والتشغيل الموحّد:
+
+```bash
+npm install            # تبعيات الموقع
+npm --prefix platform install   # تبعيات المنصة
+npm run build:all      # بناء الموقع + المنصة
+npm start              # خادم واحد: الموقع على / والمنصة على /harasa/
+```
+
+> في وضع التطوير، يمرّر `npm run dev` تلقائياً `/harasa` و `/api` إلى خادم المنصة (منفذ 3000).
+
 ## Structure
 
 ```

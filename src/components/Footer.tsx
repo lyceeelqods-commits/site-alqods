@@ -1,7 +1,8 @@
-import { MapPin, Phone, Mail, Settings, ExternalLink, Landmark, CalendarDays, HardDrive } from 'lucide-react';
+import { MapPin, Phone, Mail, Settings, ExternalLink, Landmark, CalendarDays, HardDrive, ShieldCheck } from 'lucide-react';
 import LogoMark from './LogoMark';
 import type { PageKey } from './Header';
 import type { SiteConfig } from '../lib/site';
+import { PLATFORM_PATH, PLATFORM_LABEL } from '../lib/site';
 
 export default function Footer({
   onNavigate,
@@ -90,6 +91,13 @@ export default function Footer({
               هذا الموقع منصة رقمية تمثيلية وتعليمية، تتيح للأطر المتعلمين والأطر التربوية والمرتفقين الولوج إلى خدمات المؤسسة ومواردها.
             </p>
             <div className="flex flex-col gap-2">
+              <a
+                href={PLATFORM_PATH}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gold/15 hover:bg-gold/25 border border-gold/30 text-gold text-sm font-bold transition-colors"
+              >
+                <ShieldCheck className="w-4 h-4" />
+                {PLATFORM_LABEL} — فضاء الإدارة
+              </a>
               <button
                 onClick={() => onNavigate('backup')}
                 className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-sm font-bold transition-colors"

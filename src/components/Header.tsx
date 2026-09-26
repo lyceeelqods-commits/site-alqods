@@ -3,8 +3,10 @@ import {
   Menu, X, ChevronDown, Moon, Sun, Settings, Landmark, Newspaper,
   MessageCircle, Users, School, Building2, ClipboardList,
   Sparkles, Images, Rocket, ClipboardCheck, FileText as FxIcon, HardDrive,
+  ShieldCheck,
 } from 'lucide-react';
 import LogoMark from './LogoMark';
+import { PLATFORM_PATH, PLATFORM_LABEL } from '../lib/site';
 
 export type PageKey =
   | 'home' | 'about' | 'administration' | 'levels'
@@ -161,6 +163,14 @@ export default function Header({
               </nav>
 
               <div className="flex items-center gap-2">
+                <a
+                  href={PLATFORM_PATH}
+                  className="btn-gold hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-extrabold text-[13px]"
+                  title="فضاء الإدارة والحراسة — دخول محمي"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  منصة الحراسة
+                </a>
                 <button
                   onClick={onToggleDark}
                   className="lg:hidden md:hidden p-2.5 rounded-xl border border-line dark:border-white/15 text-ink dark:text-white hover:bg-sky-soft dark:hover:bg-white/10 transition-colors"
@@ -211,6 +221,13 @@ export default function Header({
                   {p.label}
                 </button>
               ))}
+              <a
+                href={PLATFORM_PATH}
+                className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-right font-bold text-sm bg-gold-soft text-gold-deep"
+              >
+                <ShieldCheck className="w-5 h-5" />
+                {PLATFORM_LABEL} — فضاء الإدارة
+              </a>
               <button
                 onClick={() => go('backup')}
                 className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-right font-bold text-sm bg-sky-soft text-azure dark:bg-white/10 dark:text-gold"

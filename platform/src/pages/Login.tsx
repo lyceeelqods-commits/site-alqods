@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { Eye, EyeOff, Lock, LogIn, ShieldCheck, User } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Lock, LogIn, ShieldCheck, User } from "lucide-react";
 import { api } from "../api";
 import { Button, Field, Input } from "../ui";
 import LogoMark from "../LogoMark";
@@ -125,7 +125,11 @@ export default function Login({ onLogin }: { onLogin: () => Promise<void> }) {
               </div>
             </div>
           </div>
-          <p className="text-center text-[.7rem] text-ink-soft mt-5">© 2026 الثانوية التأهيلية القدس — القنيطرة · نظام داخلي محمي</p>
+          <a href="/" className="flex items-center justify-center gap-1.5 text-sm font-bold text-gold-deep hover:underline mt-5">
+            <ArrowRight size={15} />
+            العودة إلى الموقع الرسمي
+          </a>
+          <p className="text-center text-[.7rem] text-ink-soft mt-4">© 2026 الثانوية التأهيلية القدس — القنيطرة · نظام داخلي محمي</p>
         </div>
       </div>
 

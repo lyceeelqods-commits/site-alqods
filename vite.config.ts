@@ -19,9 +19,18 @@ export default defineConfig({
   server: {
     host: true,
     allowedHosts: true,
+    // في وضع التطوير: تمرير منصة الحراسة وواجهتها البرمجية إلى خادم المنصة (منفذ 3000)
+    proxy: {
+      "/harasa": "http://localhost:3000",
+      "/api": "http://localhost:3000",
+    },
   },
   preview: {
     host: true,
     allowedHosts: true,
+    proxy: {
+      "/harasa": "http://localhost:3000",
+      "/api": "http://localhost:3000",
+    },
   },
 });

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   LayoutDashboard, Users, DoorOpen, ClipboardCheck, Clock3, BellRing, FileBarChart2,
-  UserCog, Settings as SettingsIcon, History, LogOut, Menu, X, ShieldCheck,
+  UserCog, Settings as SettingsIcon, History, LogOut, Menu, X, ShieldCheck, Globe,
 } from "lucide-react";
 import { api } from "./api";
 import { AppCtx, Boot, Ctx, Role, Toast, can } from "./store";
@@ -109,9 +109,13 @@ export default function App() {
               </button>
             ))}
           </nav>
-          <div className="px-5 py-4 border-t border-white/8 text-[.68rem] text-white/40">
-            <div className="flex items-center gap-1.5 mb-1"><ShieldCheck size={12} className="text-gold" /> السنة الدراسية {boot.settings.academic_year}</div>
+          <div className="px-5 py-4 border-t border-white/8 text-[.68rem] text-white/40 space-y-1.5">
+            <div className="flex items-center gap-1.5"><ShieldCheck size={12} className="text-gold" /> السنة الدراسية {boot.settings.academic_year}</div>
             <div>نظام التدبير الداخلي — وصول حسب الصلاحيات</div>
+            <a href="/" className="flex items-center gap-1.5 text-gold/80 hover:text-gold transition-colors w-fit font-bold">
+              <Globe size={12} />
+              الموقع الرسمي للمؤسسة
+            </a>
           </div>
         </aside>
         {sidebarOpen && <div className="fixed inset-0 bg-black/40 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
