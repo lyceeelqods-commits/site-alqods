@@ -20,8 +20,11 @@ export function Button({ children, onClick, variant = "primary", size = "md", ty
 }
 
 // ---------- بطاقة ----------
-export function Card({ children, className = "", pad = true }: { children: ReactNode; className?: string; pad?: boolean }) {
-  return <div className={`bg-white rounded-2xl border border-line shadow-[0_1px_3px_rgba(28,24,18,.05)] ${pad ? "p-5" : ""} ${className}`}>{children}</div>;
+export function Card({ children, className = "", pad = true, onClick }: { children: ReactNode; className?: string; pad?: boolean; onClick?: () => void }) {
+  const interactive = onClick
+    ? { role: "button", tabIndex: 0, onClick, onKeyDown: (e: any) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } }
+    : {};
+  return <div {...interactive} className={`bg-white rounded-2xl border border-line shadow-[0_1px_3px_rgba(28,24,18,.05)] ${pad ? "p-5" : ""} ${className}`}>{children}</div>;
 }
 export function CardTitle({ children, sub, icon }: { children: ReactNode; sub?: string; icon?: ReactNode }) {
   return (
@@ -45,11 +48,12 @@ export function Badge({ children, tone = "gray" }: { children: ReactNode; tone?:
 }
 
 // ---------- حقول ----------
-export function Field({ label, children, error, className = "" }: { label: string; children: ReactNode; error?: string; className?: string }) {
+export function Field({ label, children, error, sub, className = "" }: { label: string; children: ReactNode; error?: string; sub?: string; className?: string }) {
   return (
     <div className={className}>
-      <label className="lbl">{label}</label>
+      {label && <label className="lbl">{label}</label>}
       {children}
+      {sub && <p className="text-ink-soft text-[.7rem] mt-1 font-bold">{sub}</p>}
       {error && <p className="text-bad text-xs mt-1 font-bold">{error}</p>}
     </div>
   );

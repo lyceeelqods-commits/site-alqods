@@ -43,7 +43,7 @@ export function LineArea({ data, color = "#b91c1c" }: { data: { label: string; v
   const path = pts.map((p, i) => `${i ? "L" : "M"}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(" ");
   const area = `${path} L${pts[pts.length - 1][0].toFixed(1)},${H - P} L${pts[0][0].toFixed(1)},${H - P} Z`;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" dir="ltr">
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ direction: "ltr" }}>
       <path d={area} fill={color} opacity="0.08" />
       <path d={path} fill="none" stroke={color} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />
       {pts.map((p, i) => (

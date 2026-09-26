@@ -32,10 +32,7 @@ export default function Reports() {
 
   const doExport = () => {
     if (!current?.rows) return;
-    exportCSV(current.title, current.columns, current.rows.map((r: any) => current.columns.map((c: string) => {
-      const rowKey = Object.keys(r).find((k) => r[k] !== undefined);
-      return r[c] ?? r[Object.keys(r)[current.columns.indexOf(c)]] ?? "";
-    })));
+    exportCSV(current.title, current.columns, current.rows.map((r: any) => Object.values(r).map((v: any) => v ?? "")));
   };
 
   return (

@@ -3,7 +3,7 @@ import {
   LayoutDashboard, Users, DoorOpen, ClipboardCheck, Clock3, BellRing, FileBarChart2,
   UserCog, Settings as SettingsIcon, History, LogOut, Menu, X, ShieldCheck, Globe,
 } from "lucide-react";
-import { api } from "./api";
+import { api, clearToken } from "./api";
 import { AppCtx, Boot, Ctx, Role, Toast, can } from "./store";
 import { Button, ConfirmDialog, Spinner } from "./ui";
 import LogoMark from "./LogoMark";

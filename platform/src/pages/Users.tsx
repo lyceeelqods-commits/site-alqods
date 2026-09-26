@@ -11,7 +11,7 @@ export default function UsersPage() {
   const [reset, setReset] = useState<any>(null);
 
   const load = () => api("/users").then(setRows).catch((e) => toast("err", e.message));
-  useEffect(load, []);
+  useEffect(() => { load(); }, []);
 
   const save = async () => {
     const f = form;

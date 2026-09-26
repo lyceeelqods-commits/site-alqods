@@ -41,23 +41,34 @@ export function createSession(req, res, userId, remember) {
   return token;
 }
 
+// التوكن المرسل في ترويسة Authorization (بيئات iframe التي تحجب الكوكيز)
+function bearerToken(req) {
+  const auth = req.headers.authorization;
+  return auth?.startsWith("Bearer ") ? auth.slice(7).trim() : null;
+}
+
 export function destroySession(req, res) {
-  const token = parseCookies(req)[SESSION_COOKIE];
-  if (token) db.prepare("DELETE FROM sessions WHERE token=?").run(token);
+  // حذف الجلستين: الكوكي والتوكن معاً — وإلا يبقى التوكن صالحاً بعد الخروج
+  for (const token of [parseCookies(req)[SESSION_COOKIE], bearerToken(req)]) {
+    if (token) db.prepare("DELETE FROM sessions WHERE token=?").run(token);
+  }
   res.setHeader("Set-Cookie", `${SESSION_COOKIE}=; ${cookieFlags(req)}; Max-Age=0`);
 }
 
 export function currentUser(req) {
   // التوكن: من الكوكي (المتصفح) أو من ترويسة Authorization (احتياطاً لبيئات iframe التي تحجب الكوكيز)
-  let token = parseCookies(req)[SESSION_COOKIE];
-  const auth = req.headers.authorization;
-  if (!token && auth?.startsWith("Bearer ")) token = auth.slice(7);
-  if (!token) return null;
-  const row = db.prepare(`
+  // نجرب الكوكي ثم التوكن: كوكي قديم منتهٍ لا يجب أن يُلغي توكناً صالحاً
+  const find = db.prepare(`
     SELECT u.id, u.username, u.email, u.full_name, u.role, u.active, u.last_login_at
     FROM sessions s JOIN users u ON u.id=s.user_id
-    WHERE s.token=? AND s.expires_at > datetime('now','localtime')`).get(token);
-  return row && row.active ? row : null;
+    WHERE s.token=? AND s.expires_at > ?`);
+  const now = new Date().toISOString();
+  for (const token of [parseCookies(req)[SESSION_COOKIE], bearerToken(req)]) {
+    if (!token) continue;
+    const row = find.get(token, now);
+    if (row && row.active) return row;
+  }
+  return null;
 }
 
 // حماية المسارات
@@ -216,7 +227,8 @@ export function registerRoutes(app) {
 
   // ===== التلاميذ =====
   app.get("/api/students", auth, (req, res) => {
-    const { q, level_id, class_id, status = "active", page = "1", per_page = "15" } = req.query;
+    const { q, level_id, class_id, page = "1", per_page = "15" } = req.query;
+    const status = req.query.status || "active";
     const where = ["1=1"];
     const args = [];
     if (status !== "all") { where.push("s.status=?"); args.push(status); }
